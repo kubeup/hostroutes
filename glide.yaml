@@ -1,0 +1,47 @@
+package: kubeup.com/hostroutes
+import:
+- package: github.com/golang/glog
+- package: github.com/vishvananda/netlink
+- package: github.com/imdario/mergo
+- package: github.com/spf13/pflag
+- package: cloud.google.com/go
+  version: 3b1ae45394a234c385be014e9a488f2bb6eef821
+  subpackages:
+  - compute/metadata
+  - internal
+- package: golang.org/x/oauth2
+  version: 3c3a985cb79f52a3190fbc056984415ca6763d01
+  subpackages:
+  - google
+  - internal
+  - jws
+  - jwt
+- package: golang.org/x/crypto
+  subpackages:
+  - /ssh/terminal
+- package: golang.org/x/text
+  subpackages:
+  - secure/precis
+  - unicode/norm
+- package: golang.org/x/text/unicode/norm
+- package: gopkg.in/inf.v0
+- package: github.com/go-openapi/spec
+- package: github.com/go-openapi/jsonreference
+- package: github.com/go-openapi/jsonpointer
+- package: github.com/go-openapi/swag
+- package: github.com/PuerkitoBio/purell
+- package: github.com/PuerkitoBio/urlesc
+- package: github.com/mailru/easyjson
+  subpackages:
+  - jwriter
+  - jlexer
+- package: github.com/howeyc/gopass
+- package: k8s.io/client-go
+  version: v2.0.0-alpha.0
+  subpackages:
+  - kubernetes
+  - pkg/api
+  - pkg/fields
+  - pkg/util/wait
+  - rest
+  - tools/cache
