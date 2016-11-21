@@ -19,6 +19,7 @@ import (
 	"k8s.io/client-go/pkg/api/v1"
 	"k8s.io/client-go/pkg/fields"
 	"k8s.io/client-go/pkg/util/wait"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
@@ -32,6 +33,7 @@ func main() {
 
 	// Parse flags
 	resync := flags.Int("resync", 30, "Resync period in seconds")
+	incluster := flags.Bool("in-cluster", false, "If this in run inside a pod")
 	profile := flags.Bool("profile", false, "Enable profiling")
 	address := flags.String("profile_host", "localhost", "Profiling server host")
 	port := flags.Int("profile_port", 9801, "Profiling server port")
@@ -60,8 +62,17 @@ func main() {
 	}
 
 	// Create kubeconfig
-	kubeconfig := clientcmd.NewDefaultClientConfig(*clientcmdapi.NewConfig(), overrides)
-	clientConfig, err := kubeconfig.ClientConfig()
+	var (
+		clientConfig *rest.Config
+		err          error
+	)
+	if *incluster {
+		clientConfig, err = rest.InClusterConfig()
+	} else {
+		kubeconfig := clientcmd.NewDefaultClientConfig(*clientcmdapi.NewConfig(), overrides)
+		clientConfig, err = kubeconfig.ClientConfig()
+	}
+
 	if err != nil {
 		log.Fatalf("Unable to create config: %+v", err)
 	}
@@ -76,7 +87,7 @@ func main() {
 	listwatch := cache.NewListWatchFromClient(k8s.Core().RESTClient(), "nodes", api.NamespaceAll, fields.Everything())
 
 	// Create informer
-	_, informer := cache.NewInformer(listwatch, &api.Node{}, time.Second*(time.Duration)(*resync), &hostgw.Handler{})
+	_, informer := cache.NewInformer(listwatch, &v1.Node{}, time.Second*(time.Duration)(*resync), &hostgw.Handler{})
 
 	// Handle signals (optional)
 	// Start watching

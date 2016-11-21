@@ -7,7 +7,7 @@ import (
 
 	log "github.com/golang/glog"
 	"github.com/vishvananda/netlink"
-	"k8s.io/client-go/pkg/api"
+	"k8s.io/client-go/pkg/api/v1"
 	"k8s.io/client-go/tools/cache"
 )
 
@@ -17,7 +17,7 @@ const (
 
 type Handler struct{}
 
-func server2route(s *api.Node) (*netlink.Route, error) {
+func server2route(s *v1.Node) (*netlink.Route, error) {
 	subnetStr := s.Spec.PodCIDR
 	if subnetStr == "" && s.Labels != nil {
 		sip, _ := s.Labels[Namespace+"/subnet-ip"]
@@ -32,7 +32,7 @@ func server2route(s *api.Node) (*netlink.Route, error) {
 
 	address := ""
 	for _, addr := range s.Status.Addresses {
-		if addr.Type == api.NodeInternalIP {
+		if addr.Type == v1.NodeInternalIP {
 			address = addr.Address
 		}
 	}
@@ -65,7 +65,7 @@ func routeEquals(a, b *netlink.Route) bool {
 }
 
 func (h *Handler) OnAdd(o interface{}) {
-	s := o.(*api.Node)
+	s := o.(*v1.Node)
 	hostname, _ := os.Hostname()
 	if s.Name == hostname {
 		return
@@ -82,14 +82,14 @@ func (h *Handler) OnAdd(o interface{}) {
 }
 
 func (h *Handler) OnDelete(o interface{}) {
-	s, ok := o.(*api.Node)
+	s, ok := o.(*v1.Node)
 	if !ok {
 		tmp, ok := o.(cache.DeletedFinalStateUnknown)
 		if !ok {
 			log.Infof("Unknown event: %+v", o)
 			return
 		}
-		s = tmp.Obj.(*api.Node)
+		s = tmp.Obj.(*v1.Node)
 	}
 	route, err := server2route(s)
 	if err != nil {
@@ -103,11 +103,11 @@ func (h *Handler) OnDelete(o interface{}) {
 }
 
 func (h *Handler) OnUpdate(old, new interface{}) {
-	oldNode, ok := old.(*api.Node)
+	oldNode, ok := old.(*v1.Node)
 	if !ok {
 		return
 	}
-	newNode, ok := new.(*api.Node)
+	newNode, ok := new.(*v1.Node)
 	if !ok {
 		return
 	}
