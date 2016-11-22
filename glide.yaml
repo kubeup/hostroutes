@@ -18,12 +18,11 @@ import:
   - jwt
 - package: golang.org/x/crypto
   subpackages:
-  - /ssh/terminal
+  - ssh/terminal
 - package: golang.org/x/text
   subpackages:
   - secure/precis
   - unicode/norm
-- package: golang.org/x/text/unicode/norm
 - package: gopkg.in/inf.v0
 - package: github.com/go-openapi/spec
 - package: github.com/go-openapi/jsonreference
@@ -45,3 +44,10 @@ import:
   - pkg/util/wait
   - rest
   - tools/cache
+- package: golang.org/x/net
+  subpackages:
+  - idna
+  - http2
+  - context/ctx
+  - context
+- package: github.com/pborman/uuid

@@ -6,6 +6,9 @@ imports:
   subpackages:
   - compute/metadata
   - internal
+- name: golang.org/x/crypto
+  subpackages:
+  - ssh/terminal
 - name: github.com/howeyc/gopass
   version: 3ca23474a7c7203e0a0a070fd33508f6efdb9b3d
 - name: github.com/imdario/mergo
