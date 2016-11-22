@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: hostrouts
+spec:
+  template:
+    metadata:
+      name: hostroutes
+    spec:
+      hostNetwork: true
+      containers:
+        - resources:
+            requests:
+              cpu: 0.20
+          securityContext:
+            privileged: true
+          image: kubeup/hostroutes
+          name: hostroutes
+          command: [ "/usr/bin/hostroutes", "--in-cluster" ]
