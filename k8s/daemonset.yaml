@@ -16,4 +16,4 @@ spec:
             privileged: true
           image: kubeup/hostroutes
           name: hostroutes
-          command: [ "/usr/bin/hostroutes", "--in-cluster" ]
+          command: [ "/hostroutes", "--in-cluster" ]
